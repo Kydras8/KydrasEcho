@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kydras-echo"
+version = "0.1.0"
+description = "Kydras Echo — local transcription/paraphrase GUI + CLI"
+requires-python = ">=3.9"
+dependencies = ["fastapi","uvicorn","jinja2","python-multipart","python-dotenv"]
+
+[project.scripts]
+vp = "vp.cli:main"
+kydras-echo = "kydras_echo_launcher:main"

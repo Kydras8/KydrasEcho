@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+.env
+.env.*
+.pytest_cache/
+
+# FastAPI/UVicorn logs
+*.log
+
+# Node (if you have a web UI)
+node_modules/
+dist/
+build/
+
+# OS junk
+.DS_Store
+Thumbs.db

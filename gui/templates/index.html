@@ -1,0 +1,55 @@
+<!doctype html><meta charset="utf-8">
+<title>Kydras Echo • GUI</title>
+<style>
+:root{--bg:#0b0b0d;--card:#131317;--gold:#d4af37;--muted:#9aa0a6}
+body{margin:0;background:var(--bg);color:#e8eaed;font-family:Inter,system-ui,Segoe UI,Roboto}
+header{padding:24px;border-bottom:1px solid #1f2026}
+h1{margin:0;color:var(--gold);letter-spacing:1px}
+main{display:grid;grid-template-columns:420px 1fr;gap:18px;padding:20px}
+.card{background:var(--card);border:1px solid #22232a;border-radius:14px;padding:16px}
+.progress{height:10px;background:#2a2a2a;border-radius:8px;overflow:hidden}
+.bar{height:100%;width:0;background:var(--gold);transition:width .25s}
+pre{background:#0f0f12;border:1px solid #2a2b33;border-radius:10px;padding:12px;height:360px;overflow:auto;white-space:pre-wrap}
+button{background:var(--gold);color:#000;border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}
+input,select{width:100%;padding:10px;border-radius:10px;border:1px solid #2a2b33;background:#0f0f12;color:#e8eaed}
+</style>
+<header>
+  <h1>𓂀 Kydras Echo</h1>
+  <div style="color:#9aa0a6">Hear Everything. Forget Nothing.</div>
+</header>
+<main>
+<section class="card">
+  <form id="f">
+    <label>Video/Audio URL</label>
+    <input type="text" name="media_url" placeholder="https://...">
+    <div style="height:8px"></div>
+    <label>…or Upload File</label>
+    <input type="file" name="file" />
+    <div style="height:12px"></div>
+    <button>Run</button>
+    <div style="height:8px"></div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+  </form>
+</section>
+<section class="card">
+  <h3 style="margin-top:0">Logs</h3>
+  <pre id="log">Ready.</pre>
+</section>
+</main>
+<script>
+const form=document.getElementById('f'), log=document.getElementById('log'), bar=document.getElementById('bar');
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault(); log.textContent="Starting…\n"; bar.style.width="0%";
+  const fd = new FormData(form);
+  const res = await fetch('/run',{method:'POST',body:fd});
+  const reader = res.body.getReader();
+  while (true){
+    const {value,done} = await reader.read(); if(done) break;
+    const chunk = new TextDecoder().decode(value);
+    if (chunk.includes('PROGRESS:')){
+      const m = chunk.match(/PROGRESS:(\d+)/g); if(m){ bar.style.width = Math.max(...m.map(x=>+x.split(':')[1]))+'%';}
+    }
+    log.textContent += chunk; log.scrollTop = log.scrollHeight;
+  }
+});
+</script>
