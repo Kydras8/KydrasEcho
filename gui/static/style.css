@@ -1,9 +1,20 @@
-body{font-family:system-ui,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;background:#0b0d10;color:#e6e6e6;margin:0}
-.wrap{max-width:900px;margin:40px auto;padding:24px}
-.drop{border:2px dashed #444;padding:24px;border-radius:12px;text-align:center;background:#111}
-.drop.hover{border-color:#999;background:#151515}
-.btn{color:#0af;cursor:pointer}
-.row{display:flex;gap:12px;align-items:center;margin:16px 0}
-select,button{padding:8px 10px;border-radius:8px;border:1px solid #333;background:#16181c;color:#e6e6e6}
-pre{background:#0f1115;border:1px solid #222;border-radius:8px;padding:12px;min-height:80px}
-a{color:#7dd3fc}
+:root{
+  --bg:#0b0d10; --panel:#111316; --panel-2:#15181c; --text:#e6e6e6;
+  --line:#2a2f36; --gold:#f3c14b; --gold-2:#c99c2a; --accent:#7dd3fc;
+}
+*{box-sizing:border-box}
+body{font-family:system-ui,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;background:var(--bg);color:var(--text);margin:0}
+.brand{display:flex;gap:18px;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line);background:linear-gradient(to right,#0b0d10,#0e1014)}
+.logo{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
+.titles h1{margin:0;font-size:1.8rem;letter-spacing:.5px}
+.tag{margin:.25rem 0 0;color:#c7c7c7}
+.wrap{max-width:980px;margin:28px auto;padding:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.drop{border:2px dashed var(--line);padding:24px;border-radius:12px;text-align:center;background:var(--panel-2);margin-bottom:16px}
+.drop.hover{border-color:#888}
+.btn{color:var(--accent);cursor:pointer}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:12px 0 18px}
+select,button{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#16181c;color:var(--text)}
+button{background:linear-gradient(180deg,var(--gold),var(--gold-2));color:#1b1200;font-weight:700;border:none}
+pre{background:#0f1115;border:1px solid var(--line);border-radius:10px;padding:12px;min-height:80px}
+a{color:var(--accent)} .dl{display:inline-block;margin-top:10px;font-weight:600}

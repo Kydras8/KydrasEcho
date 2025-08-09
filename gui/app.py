@@ -19,6 +19,9 @@ templates = Jinja2Templates(directory=str(APP_ROOT / "templates"))
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def index(req: Request): return templates.TemplateResponse("index.html", {"request": req})
 
+@app.get("/gui", response_class=HTMLResponse, include_in_schema=False)
+def gui(req: Request): return templates.TemplateResponse("index.html", {"request": req})
+
 @app.get("/health", include_in_schema=False)
 def health(): return {"ok": True}
 

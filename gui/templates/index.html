@@ -1,19 +1,49 @@
-<!doctype html><html><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Kydras Echo</title><link rel="stylesheet" href="/static/style.css"/>
-</head><body><div class="wrap">
-<h1>🦅 Kydras Echo</h1>
-<p>Transcribe video/audio to <b>TXT</b>, <b>PDF</b>, or extract <b>MP3</b>.</p>
-<div class="drop" id="drop"><p>Drop a media file here or <label class="btn"><input type="file" id="file" hidden>browse</label></p></div>
-<div class="row">
-  <label>Output:</label>
-  <select id="fmt"><option value="txt">TXT</option><option value="pdf">PDF</option><option value="mp3">MP3</option></select>
-  <label>Model:</label>
-  <select id="model"><option value="tiny">tiny</option><option value="base" selected>base</option><option value="small">small</option><option value="medium">medium</option></select>
-  <button id="go">Transcribe</button>
-</div>
-<pre id="log"></pre><div id="result"></div>
-</div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kydras Echo — Transcribe to TXT / PDF / MP3</title>
+  <meta name="theme-color" content="#0b0d10"/>
+  <meta name="description" content="Kydras Echo transcribes video/audio to text, searchable PDF, or MP3."/>
+  <link rel="icon" href="/static/brand/kydras-logo.png" type="image/png"/>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="brand">
+    <img src="/static/brand/kydras-logo.png" alt="Kydras" class="logo" />
+    <div class="titles">
+      <h1>Kydras Echo</h1>
+      <p class="tag">Nothing is off limits — Transcribe video/audio to <b>TXT</b>, <b>PDF</b>, or <b>MP3</b></p>
+    </div>
+  </header>
+
+  <main class="wrap card">
+    <div class="drop" id="drop">
+      <p>Drop a media file here or <label class="btn"><input type="file" id="file" hidden>browse</label></p>
+    </div>
+
+    <div class="row">
+      <label>Output:</label>
+      <select id="fmt">
+        <option value="txt">TXT</option>
+        <option value="pdf">PDF</option>
+        <option value="mp3">MP3</option>
+      </select>
+      <label>Model:</label>
+      <select id="model">
+        <option value="tiny">tiny</option>
+        <option value="base" selected>base</option>
+        <option value="small">small</option>
+        <option value="medium">medium</option>
+      </select>
+      <button id="go">Transcribe</button>
+    </div>
+
+    <pre id="log"></pre>
+    <div id="result"></div>
+  </main>
+
 <script>
 const fileInput=document.getElementById("file"),drop=document.getElementById("drop"),
 go=document.getElementById("go"),fmt=document.getElementById("fmt"),
@@ -30,7 +60,8 @@ go.addEventListener("click",async()=>{
   const r=await fetch("/api/transcribe",{method:"POST",body:fd}); const d=await r.json();
   if(!d.ok){log("[x] "+(d.error||"error"));return;}
   log("[✓] Done. Download ready.");
-  document.getElementById("result").innerHTML=`<a href="${d.output}" target="_blank">Download ${fmt.value.toUpperCase()}</a>`;
+  document.getElementById("result").innerHTML=`<a class="dl" href="\${d.output}" target="_blank">Download \${fmt.value.toUpperCase()}</a>`;
 });
 </script>
-</body></html>
+</body>
+</html>
