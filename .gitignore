@@ -1,17 +1,36 @@
+# Python cache and bytecode
 __pycache__/
-*.py[cod]
+*.pyc
 *.pyo
 *.pyd
-*.egg-info/
-.eggs/
-dist/
-build/
+
+# Virtual environments
 .venv/
-.env
-.env.*
-.pytest_cache/
-*.log
-node_modules/
+env/
+venv/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.tar.gz
+*.zip
+
+# Release artifacts
+.release/
+
+# OS files
 .DS_Store
 Thumbs.db
-.release/
+
+# Logs
+*.log
+
+# IDE configs
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
