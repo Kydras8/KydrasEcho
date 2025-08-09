@@ -2,28 +2,48 @@
 
 <p align="left">
   <a href="https://github.com/Kydras8/KydrasEcho/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Kydras8/KydrasEcho.svg">
+    <img src="https://img.shields.io/github/license/Kydras8/KydrasEcho.svg" alt="license">
   </a>
-  <img src="https://img.shields.io/badge/shell-bash-blue.svg">
-  <img src="https://img.shields.io/github/last-commit/Kydras8/KydrasEcho.svg">
-  <img src="https://img.shields.io/github/stars/Kydras8/KydrasEcho.svg?style=social">
+  <img src="https://img.shields.io/github/stars/Kydras8/KydrasEcho.svg?style=social" alt="stars">
+  <img src="https://img.shields.io/github/last-commit/Kydras8/KydrasEcho.svg" alt="last commit">
+  <img src="https://img.shields.io/github/issues/Kydras8/KydrasEcho.svg" alt="issues">
+  <img src="https://img.shields.io/badge/python-3.9%2B-blue" alt="python">
 </p>
 
-## ✨ Overview
-Kydras Echo is a FastAPI-based utility (CLI/GUI) for quick local tooling.
+---
 
-## 🚀 Quick Start
+## 🎯 Overview
+**Kydras Echo** is a media transcription tool that turns **video or audio** into:
+- Clean **text**
+- Searchable **PDF**
+- High-quality **MP3** extracts
+
+Built for researchers, journalists, content creators, and anyone who needs fast, accurate transcripts.
+
+---
+
+## ✨ Features
+- **Multi-format input** — MP4, MKV, AVI, MP3, WAV, and more
+- **Accurate transcription** using AI speech-to-text
+- **Multiple export options**:
+  - Plain text (`.txt`)
+  - Searchable PDF (`.pdf`)
+  - Audio extract (`.mp3`)
+- **Batch processing** — handle multiple files in one run
+- **GUI & CLI modes** — choose your workflow
+- **Offline & Online modes** — use local model or API
+
+---
+
+## 📦 Quick Install
+
+### Option 1 — From GitHub (source)
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -U pip wheel
-pip install -r requirements.txt
-uvicorn gui.app:app --host 0.0.0.0 --port 8000 --reload
-```
+git clone https://github.com/Kydras8/KydrasEcho.git
+cd KydrasEcho
+./install.sh
 
-## 📊 Stats
-![Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Kydras8&layout=compact)
-![Stats](https://github-readme-stats.vercel.app/api?username=Kydras8&show_icons=true)
+
 
 ## 📝 License
 MIT © 2025 Kydras8
