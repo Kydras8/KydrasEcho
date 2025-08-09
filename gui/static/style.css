@@ -1,0 +1,9 @@
+body{font-family:system-ui,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;background:#0b0d10;color:#e6e6e6;margin:0}
+.wrap{max-width:900px;margin:40px auto;padding:24px}
+.drop{border:2px dashed #444;padding:24px;border-radius:12px;text-align:center;background:#111}
+.drop.hover{border-color:#999;background:#151515}
+.btn{color:#0af;cursor:pointer}
+.row{display:flex;gap:12px;align-items:center;margin:16px 0}
+select,button{padding:8px 10px;border-radius:8px;border:1px solid #333;background:#16181c;color:#e6e6e6}
+pre{background:#0f1115;border:1px solid #222;border-radius:8px;padding:12px;min-height:80px}
+a{color:#7dd3fc}

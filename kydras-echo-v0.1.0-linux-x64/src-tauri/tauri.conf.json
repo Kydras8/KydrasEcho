@@ -1,0 +1,28 @@
+{
+  "productName": "Kydras Echo",
+  "version": "0.1.0",
+  "identifier": "com.kydras.echo",
+  "build": {
+    "frontendDist": "dist",
+    "devUrl": "http://127.0.0.1:8000",
+    "beforeDevCommand": "",
+    "beforeBuildCommand": ""
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Kydras Echo",
+        "width": 1100,
+        "height": 720,
+        "resizable": true
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "deb",
+      "appimage"
+    ]
+  }
+}

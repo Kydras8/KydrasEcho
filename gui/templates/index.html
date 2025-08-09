@@ -1,55 +1,36 @@
-<!doctype html><meta charset="utf-8">
-<title>Kydras Echo • GUI</title>
-<style>
-:root{--bg:#0b0b0d;--card:#131317;--gold:#d4af37;--muted:#9aa0a6}
-body{margin:0;background:var(--bg);color:#e8eaed;font-family:Inter,system-ui,Segoe UI,Roboto}
-header{padding:24px;border-bottom:1px solid #1f2026}
-h1{margin:0;color:var(--gold);letter-spacing:1px}
-main{display:grid;grid-template-columns:420px 1fr;gap:18px;padding:20px}
-.card{background:var(--card);border:1px solid #22232a;border-radius:14px;padding:16px}
-.progress{height:10px;background:#2a2a2a;border-radius:8px;overflow:hidden}
-.bar{height:100%;width:0;background:var(--gold);transition:width .25s}
-pre{background:#0f0f12;border:1px solid #2a2b33;border-radius:10px;padding:12px;height:360px;overflow:auto;white-space:pre-wrap}
-button{background:var(--gold);color:#000;border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}
-input,select{width:100%;padding:10px;border-radius:10px;border:1px solid #2a2b33;background:#0f0f12;color:#e8eaed}
-</style>
-<header>
-  <h1>𓂀 Kydras Echo</h1>
-  <div style="color:#9aa0a6">Hear Everything. Forget Nothing.</div>
-</header>
-<main>
-<section class="card">
-  <form id="f">
-    <label>Video/Audio URL</label>
-    <input type="text" name="media_url" placeholder="https://...">
-    <div style="height:8px"></div>
-    <label>…or Upload File</label>
-    <input type="file" name="file" />
-    <div style="height:12px"></div>
-    <button>Run</button>
-    <div style="height:8px"></div>
-    <div class="progress"><div id="bar" class="bar"></div></div>
-  </form>
-</section>
-<section class="card">
-  <h3 style="margin-top:0">Logs</h3>
-  <pre id="log">Ready.</pre>
-</section>
-</main>
+<!doctype html><html><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Kydras Echo</title><link rel="stylesheet" href="/static/style.css"/>
+</head><body><div class="wrap">
+<h1>🦅 Kydras Echo</h1>
+<p>Transcribe video/audio to <b>TXT</b>, <b>PDF</b>, or extract <b>MP3</b>.</p>
+<div class="drop" id="drop"><p>Drop a media file here or <label class="btn"><input type="file" id="file" hidden>browse</label></p></div>
+<div class="row">
+  <label>Output:</label>
+  <select id="fmt"><option value="txt">TXT</option><option value="pdf">PDF</option><option value="mp3">MP3</option></select>
+  <label>Model:</label>
+  <select id="model"><option value="tiny">tiny</option><option value="base" selected>base</option><option value="small">small</option><option value="medium">medium</option></select>
+  <button id="go">Transcribe</button>
+</div>
+<pre id="log"></pre><div id="result"></div>
+</div>
 <script>
-const form=document.getElementById('f'), log=document.getElementById('log'), bar=document.getElementById('bar');
-form.addEventListener('submit', async (e)=>{
-  e.preventDefault(); log.textContent="Starting…\n"; bar.style.width="0%";
-  const fd = new FormData(form);
-  const res = await fetch('/run',{method:'POST',body:fd});
-  const reader = res.body.getReader();
-  while (true){
-    const {value,done} = await reader.read(); if(done) break;
-    const chunk = new TextDecoder().decode(value);
-    if (chunk.includes('PROGRESS:')){
-      const m = chunk.match(/PROGRESS:(\d+)/g); if(m){ bar.style.width = Math.max(...m.map(x=>+x.split(':')[1]))+'%';}
-    }
-    log.textContent += chunk; log.scrollTop = log.scrollHeight;
-  }
+const fileInput=document.getElementById("file"),drop=document.getElementById("drop"),
+go=document.getElementById("go"),fmt=document.getElementById("fmt"),
+model=document.getElementById("model"),log=t=>document.getElementById("log").textContent+=t+"\\n";
+let selected=null;
+fileInput.addEventListener("change",e=>selected=e.target.files[0]);
+drop.addEventListener("dragover",e=>{e.preventDefault();drop.classList.add("hover");});
+drop.addEventListener("dragleave",()=>drop.classList.remove("hover"));
+drop.addEventListener("drop",e=>{e.preventDefault();drop.classList.remove("hover");selected=e.dataTransfer.files[0];});
+go.addEventListener("click",async()=>{
+  if(!selected){alert("Choose a file first");return;}
+  const fd=new FormData(); fd.append("media",selected); fd.append("output_format",fmt.value); fd.append("model_size",model.value);
+  log("[*] Uploading…");
+  const r=await fetch("/api/transcribe",{method:"POST",body:fd}); const d=await r.json();
+  if(!d.ok){log("[x] "+(d.error||"error"));return;}
+  log("[✓] Done. Download ready.");
+  document.getElementById("result").innerHTML=`<a href="${d.output}" target="_blank">Download ${fmt.value.toUpperCase()}</a>`;
 });
 </script>
+</body></html>
