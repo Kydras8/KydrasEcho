@@ -1,4 +1,4 @@
-
+cat > README.md <<'EOF'
 # 🎙️ Kydras Echo  
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Kydras8/KydrasEcho?label=Latest%20Release&style=for-the-badge)](https://github.com/Kydras8/KydrasEcho/releases/latest)
 [![GitHub all releases](https://img.shields.io/github/downloads/Kydras8/KydrasEcho/total?style=for-the-badge)](https://github.com/Kydras8/KydrasEcho/releases)
