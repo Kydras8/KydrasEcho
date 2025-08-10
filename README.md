@@ -1,49 +1,33 @@
-# Kydras Echo
 
-<p align="left">
-  <a href="https://github.com/Kydras8/KydrasEcho/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Kydras8/KydrasEcho.svg" alt="license">
-  </a>
-  <img src="https://img.shields.io/github/stars/Kydras8/KydrasEcho.svg?style=social" alt="stars">
-  <img src="https://img.shields.io/github/last-commit/Kydras8/KydrasEcho.svg" alt="last commit">
-  <img src="https://img.shields.io/github/issues/Kydras8/KydrasEcho.svg" alt="issues">
-  <img src="https://img.shields.io/badge/python-3.9%2B-blue" alt="python">
-</p>
+# 🎙️ Kydras Echo  
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Kydras8/KydrasEcho?label=Latest%20Release&style=for-the-badge)](https://github.com/Kydras8/KydrasEcho/releases/latest)
+[![GitHub all releases](https://img.shields.io/github/downloads/Kydras8/KydrasEcho/total?style=for-the-badge)](https://github.com/Kydras8/KydrasEcho/releases)
+[![License](https://img.shields.io/github/license/Kydras8/KydrasEcho?style=for-the-badge)](LICENSE)
+
+> **Transcribe videos into text, PDF, or MP3 — quickly and locally.**
 
 ---
 
-## 🎯 Overview
-**Kydras Echo** is a media transcription tool that turns **video or audio** into:
-- Clean **text**
-- Searchable **PDF**
-- High-quality **MP3** extracts
-
-Built for researchers, journalists, content creators, and anyone who needs fast, accurate transcripts.
-
----
-
-## ✨ Features
-- **Multi-format input** — MP4, MKV, AVI, MP3, WAV, and more
-- **Accurate transcription** using AI speech-to-text
-- **Multiple export options**:
-  - Plain text (`.txt`)
-  - Searchable PDF (`.pdf`)
-  - Audio extract (`.mp3`)
-- **Batch processing** — handle multiple files in one run
-- **GUI & CLI modes** — choose your workflow
-- **Offline & Online modes** — use local model or API
+## 🚀 Features
+- 🎯 **Multi-format export** — `.txt`, `.pdf`, `.mp3`
+- ⚡ **Fast transcription** using `faster-whisper` (offline, local)
+- 🎨 **Branded GUI** with Kydras logo
+- 🖥️ **Web & API access** via FastAPI
+- 🔒 **Private** — all processing happens locally
+- 🛠 **Cross-platform** (Linux, Windows via WSL, macOS)
 
 ---
 
-## 📦 Quick Install
+## 📥 Quick Install
 
-### Option 1 — From GitHub (source)
 ```bash
-git clone https://github.com/Kydras8/KydrasEcho.git
-cd KydrasEcho
-./install.sh
+# 1) Download latest release
+wget https://github.com/Kydras8/KydrasEcho/releases/latest/download/kydras-echo-v0.1.2-linux-x64.tar.gz
 
+# 2) Extract
+tar -xvzf kydras-echo-v0.1.2-linux-x64.tar.gz
+cd kydras-echo-v0.1.2-linux-x64
 
-
-## 📝 License
-MIT © 2025 Kydras8
+# 3) Install dependencies & run
+bash install.sh
+./run.sh
