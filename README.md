@@ -31,3 +31,26 @@ cd kydras-echo-v0.1.2-linux-x64
 # 3) Install dependencies & run
 bash install.sh
 ./run.sh
+💻 Usage
+
+    Open browser to http://127.0.0.1:8000
+
+    Upload your video/audio file
+
+    Choose output format (txt, pdf, mp3)
+
+    Download your transcription
+
+📊 Repo Stats
+
+
+🗺 Roadmap
+
+Batch file transcription
+
+Multi-language support
+
+GPU acceleration mode
+
+    Windows installer
+
