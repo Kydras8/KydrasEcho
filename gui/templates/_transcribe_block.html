@@ -1,0 +1,27 @@
+<!-- BEGIN_TRANSCRIBE_BLOCK -->
+<section class="card">
+  <h3>Transcribe a Video</h3>
+  <form id="transcribe-form" enctype="multipart/form-data">
+    <div class="row">
+      <label class="row"><input type="radio" id="source-file" name="source" value="file" checked> <span>Upload file</span></label>
+      <label class="row" style="margin-left:1rem;"><input type="radio" id="source-url" name="source" value="url"> <span>Use URL</span></label>
+    </div>
+
+    <div id="file-group" class="group">
+      <label for="video-file">Video file</label>
+      <input type="file" id="video-file" name="file" accept="video/*">
+    </div>
+
+    <div id="url-group" class="group">
+      <label for="video-url">Video URL</label>
+      <input type="url" id="video-url" name="video_url" placeholder="https://…">
+      <small>Supports YouTube, Vimeo, or direct .mp4 links (backend can use yt-dlp).</small>
+    </div>
+
+    <button id="go-transcribe" type="submit">Transcribe</button>
+    <div id="progress" style="display:none;margin-top:.5rem;">Working…</div>
+  </form>
+</section>
+<pre id="transcript-output" class="card" style="white-space:pre-wrap;"></pre>
+<script type="module" src="/static/js/transcribe.js"></script>
+<!-- END_TRANSCRIBE_BLOCK -->

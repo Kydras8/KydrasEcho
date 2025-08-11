@@ -1,20 +1,208 @@
+/* Kydras Echo — neon terminal aesthetic (grid + blended logo) */
 :root{
-  --bg:#0b0d10; --panel:#111316; --panel-2:#15181c; --text:#e6e6e6;
-  --line:#2a2f36; --gold:#f3c14b; --gold-2:#c99c2a; --accent:#7dd3fc;
+  --bg: #0b0f10; --panel:#11161a; --ink:#e6f1ef; --muted:#9fb0ad;
+  --accent:#00ffa6; --accent-2:#38f9ff;
 }
 *{box-sizing:border-box}
-body{font-family:system-ui,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;background:var(--bg);color:var(--text);margin:0}
-.brand{display:flex;gap:18px;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line);background:linear-gradient(to right,#0b0d10,#0e1014)}
-.logo{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
-.titles h1{margin:0;font-size:1.8rem;letter-spacing:.5px}
-.tag{margin:.25rem 0 0;color:#c7c7c7}
-.wrap{max-width:980px;margin:28px auto;padding:22px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
-.drop{border:2px dashed var(--line);padding:24px;border-radius:12px;text-align:center;background:var(--panel-2);margin-bottom:16px}
-.drop.hover{border-color:#888}
-.btn{color:var(--accent);cursor:pointer}
-.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:12px 0 18px}
-select,button{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#16181c;color:var(--text)}
-button{background:linear-gradient(180deg,var(--gold),var(--gold-2));color:#1b1200;font-weight:700;border:none}
-pre{background:#0f1115;border:1px solid var(--line);border-radius:10px;padding:12px;min-height:80px}
-a{color:var(--accent)} .dl{display:inline-block;margin-top:10px;font-weight:600}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background: radial-gradient(1200px 600px at 20% -10%, #0e1f22 0%, var(--bg) 60%);
+  font: 15px/1.5 "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* --- ONE layer that contains grid + logo together --- */
+.grid-bg{
+  position:fixed; inset:0; pointer-events:none; z-index:-1;
+
+  /* order matters: grid lines first (top), then logo (bottom) */
+  background-image:
+    linear-gradient(rgba(56,249,255,.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,249,255,.12) 1px, transparent 1px),
+    url("/static/brand/kydras-logo.png");
+  background-size: 28px 28px, 28px 28px, 70vmin;
+  background-position: 0 0, 0 0, center 28%;
+  background-repeat: repeat, repeat, no-repeat;
+
+  /* blend the grid softly over the logo; logo stays subtle */
+  background-blend-mode: soft-light, soft-light, normal;
+  opacity: 1;          /* keep at 1; control subtlety via logo filter/alpha */
+  filter: drop-shadow(0 0 35px rgba(255,215,0,.12));
+}
+
+/* header */
+.topbar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 18px; background:rgba(8,12,14,.7); backdrop-filter: blur(6px);
+  border-bottom:1px solid rgba(56,249,255,.2);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .logo{height:50px; filter: drop-shadow(0 0 10px rgba(0,255,166,.6))}
+.brand .title-text{font-size:1.5em;font-weight:700;color:#00ffa6;text-shadow:0 0 6px rgba(0,255,166,.7)}
+.status{ color:var(--muted); font-size:13px; }
+
+/* cards */
+.container{ max-width: 980px; margin: 28px auto; padding: 0 16px; display:grid; gap:18px; }
+.card{
+  background:linear-gradient(180deg, rgba(17,22,26,.88), rgba(17,22,26,.92));
+  border:1px solid rgba(0,255,166,.15);
+  border-radius:16px; padding:16px 16px 18px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.35), inset 0 0 0 1px rgba(56,249,255,.06);
+}
+h2{ margin:4px 0 12px; font-size:16px; color:var(--accent-2); text-shadow: 0 0 18px rgba(56,249,255,.2); }
+.row{ display:flex; gap:10px; }
+.row input[type=url]{ flex:1; }
+
+input[type=file], input[type=url], textarea{
+  width:100%; background:#0d1417; color:var(--ink);
+  border:1px solid rgba(56,249,255,.2); border-radius:10px; padding:10px 12px;
+  outline:none; box-shadow: inset 0 0 0 1px rgba(0,255,166,.05);
+}
+textarea{ min-height:220px; resize:vertical; }
+
+.opts{ display:flex; flex-wrap:wrap; gap:12px; margin:10px 0; color:var(--muted); }
+.btn{
+  appearance:none; border:none; cursor:pointer; user-select:none;
+  color:#00110c; background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  padding:10px 14px; border-radius:12px; font-weight:700; letter-spacing:.2px;
+  box-shadow: 0 8px 24px rgba(0,255,166,.18), 0 2px 0 rgba(0,0,0,.3) inset;
+}
+.btn:hover{ filter: brightness(1.04); }
+
+.files{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+.file-pill{
+  background:rgba(0,255,166,.08); border:1px solid rgba(0,255,166,.25); color:var(--accent);
+  padding:6px 10px; border-radius:999px; font-size:12px;
+}
+.muted{ color:var(--muted); font-size:12px; }
+.foot{ text-align:center; color:var(--muted); margin: 14px 0 28px; font-size:12px; }
+
+/* responsive logo sizing */
+@media (min-width:1400px){ .grid-bg{ background-size:28px 28px,28px 28px, 58vmin; } }
+@media (max-width:780px){  .grid-bg{ background-position:0 0,0 0, center 18%; background-size:28px 28px,28px 28px, 88vmin; } }
+
+/* === Neon, color-shifting breathing glow for the blended logo === */
+/* This keeps the grid + logo on the same layer and animates only the glow. */
+.grid-bg{
+  position: fixed; inset: 0; pointer-events: none; z-index: -1;
+
+  /* grid layers + centered logo (order matters) */
+  background-image:
+    linear-gradient(rgba(56,249,255,.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,249,255,.12) 1px, transparent 1px),
+    url("/static/brand/kydras-logo.png");
+  background-size: 28px 28px, 28px 28px, 70vmin;
+  background-position: 0 0, 0 0, center 28%;
+  background-repeat: repeat, repeat, no-repeat;
+  background-blend-mode: soft-light, soft-light, normal;
+
+  /* animated breathing + color shift */
+  animation: logoBreath 8s ease-in-out infinite;
+}
+
+/* Glow “breathes” and shifts color from neon green → teal → green */
+@keyframes logoBreath {
+  0%   { filter: drop-shadow(0 0 32px rgba(0,255,166,.12)); }
+  25%  { filter: drop-shadow(0 0 46px rgba(0,255,166,.18)); }  /* brighter green */
+  50%  { filter: drop-shadow(0 0 60px rgba(56,249,255,.22)); } /* teal peak */
+  75%  { filter: drop-shadow(0 0 46px rgba(0,255,166,.18)); }  /* back toward green */
+  100% { filter: drop-shadow(0 0 32px rgba(0,255,166,.12)); }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .grid-bg { animation: none; }
+}
+
+/* Header logo gentle glow to match the background */
+.brand .logo {
+  height: 50px;
+  filter: drop-shadow(0 0 8px rgba(0,255,166,.35));
+  animation: headerGlow 8s ease-in-out infinite;
+}
+@keyframes headerGlow {
+  0%   { filter: drop-shadow(0 0 8px rgba(0,255,166,.35)); }
+  50%  { filter: drop-shadow(0 0 14px rgba(56,249,255,.45)); }
+  100% { filter: drop-shadow(0 0 8px rgba(0,255,166,.35)); }
+}
+
+/* --- Header logo: subtle breathing glow --- */
+.brand .logo{
+  height:50px;
+  filter: drop-shadow(0 0 8px rgba(0,255,166,.35));
+  animation: headerGlow 8s ease-in-out infinite;
+}
+@keyframes headerGlow{
+  0%   { filter: drop-shadow(0 0 8px rgba(0,255,166,.35)); }
+  50%  { filter: drop-shadow(0 0 14px rgba(56,249,255,.45)); }
+  100% { filter: drop-shadow(0 0 8px rgba(0,255,166,.35)); }
+}
+
+/* --- Grid layer: logo stretched full cover + green glow + breathing --- */
+/* Placed at end of file to override earlier .grid-bg rules */
+.grid-bg{
+  position:fixed; inset:0; pointer-events:none; z-index:-1;
+
+  /* grid lines + green glow overlay + full-cover logo */
+  background-image:
+    linear-gradient(rgba(56,249,255,.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,249,255,.12) 1px, transparent 1px),
+    radial-gradient(60% 45% at 50% 35%, rgba(0,255,166,.20), rgba(0,255,166,0) 60%),
+    url("/static/brand/kydras-logo.png");
+  background-size: 28px 28px, 28px 28px, cover, cover;   /* grid fixed; logo covers */
+  background-position: 0 0, 0 0, center, center;
+  background-repeat: repeat, repeat, no-repeat, no-repeat;
+  background-blend-mode: soft-light, soft-light, screen, normal;
+
+  /* breathing glow on the whole layer */
+  animation: bgBreath 8s ease-in-out infinite;
+}
+@keyframes bgBreath{
+  0%,100% { filter: drop-shadow(0 0 28px rgba(0,255,166,.12)); }
+  50%     { filter: drop-shadow(0 0 48px rgba(56,249,255,.22)); }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .grid-bg, .brand .logo { animation:none; }
+}
+
+/* === FINAL OVERRIDES: size + animation for background logo === */
+body .grid-bg{
+  /* grid stays the same; logo layer is 3rd and 4th images below */
+  background-image:
+    linear-gradient(rgba(56,249,255,.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,249,255,.12) 1px, transparent 1px),
+    radial-gradient(60% 45% at 50% 35%, rgba(0,255,166,.18), rgba(0,255,166,0) 60%),
+    url("/static/brand/kydras-logo.png") !important;
+
+  /* cap logo scale with viewport; adjust 62vmin ↔ 80vmin to taste */
+  background-size: 28px 28px, 28px 28px, 100vmax, 62vmin !important;
+  background-position: 0 0, 0 0, center 32%, center 32% !important;
+  background-repeat: repeat, repeat, no-repeat, no-repeat !important;
+  background-blend-mode: soft-light, soft-light, screen, normal !important;
+
+  /* force the breathing glow even if another rule disabled it */
+  animation: KydrasBreath 9s ease-in-out infinite !important;
+}
+
+/* color-shifting breathing glow */
+@keyframes KydrasBreath{
+  0%   { filter: drop-shadow(0 0 30px rgba(0,255,166,.12)); }
+  25%  { filter: drop-shadow(0 0 44px rgba(0,255,166,.18)); }
+  50%  { filter: drop-shadow(0 0 58px rgba(56,249,255,.22)); }
+  75%  { filter: drop-shadow(0 0 44px rgba(0,255,166,.18)); }
+  100% { filter: drop-shadow(0 0 30px rgba(0,255,166,.12)); }
+}
+
+/* If a previous block disabled motion, re‑enable here */
+@media (prefers-reduced-motion: reduce){
+  /* comment the next line if you *do* want to respect reduced motion */
+  body .grid-bg{ animation: KydrasBreath 9s ease-in-out infinite !important; }
+}
+/* header logo glow */
+.brand .logo{ height:50px; animation: HeaderGlow 9s ease-in-out infinite; }
+@keyframes HeaderGlow{
+  0%,100%{ filter: drop-shadow(0 0 8px rgba(0,255,166,.35)); }
+  50%    { filter: drop-shadow(0 0 14px rgba(56,249,255,.45)); }
+}

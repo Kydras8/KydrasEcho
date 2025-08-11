@@ -8,13 +8,10 @@
 </head>
 <body>
   <div class="grid-bg"></div>
-<header class="topbar">
-  <div class="brand">
-    <img class="logo" src="/static/brand/kydras-logo.png" alt="Kydras logo">
-    <div class="title-text">&lt;/&gt; Kydras <b>Echo</b></div>
-  </div>
-  <div class="status" id="progress">ready</div>
-</header>
+  <header class="topbar">
+    <div class="brand"><span class="accent">&lt;/&gt;</span> Kydras <b>Echo</b></div>
+    <div class="status" id="progress">ready</div>
+  </header>
 
   <main class="container">
     <section class="card">
@@ -47,7 +44,6 @@
       <h2>Output</h2>
       <textarea id="output" rows="12" spellcheck="false" placeholder="Transcript will appear here..."></textarea>
       <div class="files" id="files"></div>
-      <p class="muted">Saved files: <a href="/outputs" target="_blank">/outputs</a></p>
     </section>
   </main>
 
@@ -67,9 +63,8 @@
       for(const [k,v] of Object.entries(map)){
         if(!v) continue;
         const a = document.createElement("a");
-        a.href = "/outputs/" + v.split("/outputs/").pop();
-        a.target = "_blank";
-        a.textContent = k.toUpperCase() + ": " + v.split("/").pop();
+        a.href = "#"; a.textContent = k.toUpperCase() + ": " + v;
+        a.addEventListener("click",(e)=>{ e.preventDefault(); alert(v); });
         const div = document.createElement("div");
         div.className = "file-pill";
         div.appendChild(a);
@@ -77,6 +72,7 @@
       }
     }
 
+    // File
     q("#btn-file").addEventListener("click", async (e)=>{
       e.preventDefault();
       const f = q("#file").files[0];
@@ -97,6 +93,7 @@
       }catch(err){ console.error(err); setStatus("Error"); alert(err.message); }
     });
 
+    // URL
     q("#btn-url").addEventListener("click", async (e)=>{
       e.preventDefault();
       const url = q("#url-input").value.trim();

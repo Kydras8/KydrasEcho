@@ -21,11 +21,8 @@ DEST_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="Kydras Echo", version="0.10.0")
 
-# Mount static assets and a read-only outputs browser
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
-app.mount("/outputs", StaticFiles(directory=str(DEST_DIR)), name="outputs")
-
 templates = Jinja2Templates(directory=str(TEMPL_DIR)) if TEMPL_DIR.exists() else None
 
 # ---------------------------------------------------------------------
@@ -59,6 +56,7 @@ def save_text_file(text: str, prefix: str) -> str:
     return str(out)
 
 def save_pdf(text: str, prefix: str) -> str:
+    # Minimal PDF using fpdf2 (fast & simple)
     from fpdf import FPDF
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     safe = "".join(c for c in (prefix or "output") if c.isalnum() or c in "-_")[:50] or "output"
@@ -67,6 +65,7 @@ def save_pdf(text: str, prefix: str) -> str:
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
     pdf.set_font("Courier", size=11)
+    # Wrap text roughly to page width
     for line in text.splitlines() or [" "]:
         wrapped = textwrap.wrap(line, width=95) or [""]
         for w in wrapped:
@@ -75,6 +74,7 @@ def save_pdf(text: str, prefix: str) -> str:
     return str(out)
 
 def copy_audio_to_outputs(src_path: str, prefix: Optional[str]=None) -> str:
+    """Copy downloaded/uploaded audio into DEST_DIR with timestamp."""
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     base = prefix or Path(src_path).stem
     safe = "".join(c for c in (base or "audio") if c.isalnum() or c in "-_")[:50] or "audio"

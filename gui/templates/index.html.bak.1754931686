@@ -8,13 +8,10 @@
 </head>
 <body>
   <div class="grid-bg"></div>
-<header class="topbar">
-  <div class="brand">
-    <img class="logo" src="/static/brand/kydras-logo.png" alt="Kydras logo">
-    <div class="title-text">&lt;/&gt; Kydras <b>Echo</b></div>
-  </div>
-  <div class="status" id="progress">ready</div>
-</header>
+  <header class="topbar">
+    <div class="brand"><img class="logo" src="/static/brand/kydras-logo.png" alt="Kydras logo"><div class="title-text"><div class="brand"><img class="logo" src="/static/brand/kydras-logo.png" alt="Kydras logo"> <img class="logo" src="/static/brand/kydras-logo.png" alt="Kydras logo"> <span class="accent"><div class="brand"><span class="accent">&lt;/&gt;</span> Kydras <b>Echo</b></div>lt;/<div class="brand"><span class="accent">&lt;/&gt;</span> Kydras <b>Echo</b></div>gt;</span> Kydras <b>Echo</b></div>lt;/<div class="brand"><img class="logo" src="/static/brand/kydras-logo.png" alt="Kydras logo"> <img class="logo" src="/static/brand/kydras-logo.png" alt="Kydras logo"> <span class="accent"><div class="brand"><span class="accent">&lt;/&gt;</span> Kydras <b>Echo</b></div>lt;/<div class="brand"><span class="accent">&lt;/&gt;</span> Kydras <b>Echo</b></div>gt;</span> Kydras <b>Echo</b></div>gt; Kydras <b>Echo</b></div></div>
+    <div class="status" id="progress">ready</div>
+  </header>
 
   <main class="container">
     <section class="card">

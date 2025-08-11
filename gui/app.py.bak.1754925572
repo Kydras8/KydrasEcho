@@ -1,0 +1,199 @@
+# app.py — Kydras Echo (minimal, stable)
+# Save to: ~/KydrasEcho/gui/app.py
+
+from __future__ import annotations
+
+import os
+import shutil
+import subprocess
+import tempfile
+from pathlib import Path
+from typing import Optional
+
+from fastapi import FastAPI, Request, UploadFile, File, Form
+from fastapi.responses import RedirectResponse, JSONResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
+# -----------------------------------------------------------------------------
+# App & paths
+# -----------------------------------------------------------------------------
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
+TEMPL_DIR = HERE / "templates"
+STATIC_DIR = HERE / "static"
+
+app = FastAPI(title="Kydras Echo", version="0.9.2")
+
+# Serve /static and template folder
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+templates = Jinja2Templates(directory=str(TEMPL_DIR)) if TEMPL_DIR.exists() else None
+
+
+# -----------------------------------------------------------------------------
+# Small helpers
+# -----------------------------------------------------------------------------
+def simple_paraphrase(text: str) -> str:
+    """Lightweight cleanup pass (no ML)."""
+    import re
+    t = text or ""
+    t = re.sub(r"[ \t]+", " ", t)
+    t = re.sub(r" *\n *", "\n", t)
+    t = re.sub(r"\b(uh|um|you know|like,|i mean|sort of|kind of)\b", "", t, flags=re.I)
+    t = re.sub(r"\s{2,}", " ", t).strip()
+    return t
+
+
+def run_transcription(audio_path: str) -> str:
+    """
+    Placeholder transcription.
+    Replace this with your real STT call (Whisper/Vosk/etc.).
+    Must return a STRING.
+    """
+    base = os.path.basename(audio_path)
+    return f"[demo transcript for {base}] This is a placeholder. Replace run_transcription(...) with your STT."
+
+
+def save_upload_to_tmp(upload: UploadFile) -> str:
+    """Persist UploadFile to a temp path and return it."""
+    td = tempfile.mkdtemp(prefix="kye-up-")
+    dst = os.path.join(td, upload.filename or "input.bin")
+    with open(dst, "wb") as f:
+        shutil.copyfileobj(upload.file, f)
+    return dst
+
+
+def download_video_to_tmp(url: str) -> str:
+    """
+    Use yt-dlp to fetch best audio to temp file (m4a).
+    Requires: yt-dlp and ffmpeg installed system-wide.
+    """
+    td = tempfile.mkdtemp(prefix="kye-url-")
+    out_tpl = os.path.join(td, "audio.%(ext)s")
+    cmd = [
+        "yt-dlp",
+        "-f", "bestaudio/best",
+        "--extract-audio",
+        "--audio-format", "m4a",
+        "-o", out_tpl,
+        url,
+    ]
+    subprocess.check_call(cmd)
+    # Find the produced file
+    for fn in os.listdir(td):
+        if fn.startswith("audio.") and fn.split(".")[-1].lower() in {"m4a", "mp3", "wav", "ogg", "webm"}:
+            return os.path.join(td, fn)
+    raise RuntimeError("Audio download failed — no output file found.")
+
+
+def as_bool(val: Optional[str | bool | int]) -> bool:
+    if isinstance(val, bool):
+        return val
+    if val is None:
+        return False
+    s = str(val).strip().lower()
+    return s in {"1", "true", "on", "yes", "y"}
+
+
+# -----------------------------------------------------------------------------
+# Routes
+# -----------------------------------------------------------------------------
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    return RedirectResponse(url="/gui")
+
+
+@app.get("/gui", response_class=HTMLResponse, include_in_schema=False)
+def gui(request: Request):
+    if not templates:
+        # In case templates missing, give a tiny inline page so it still works
+        html = """<!doctype html><meta charset="utf-8"><title>Kydras Echo</title>
+        <h1>Kydras Echo</h1><p>Templates folder not found. API is up.</p>"""
+        return HTMLResponse(html)
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.get("/health", include_in_schema=False)
+def health():
+    return {"ok": True, "status": "up"}
+
+
+@app.post("/transcribe")
+async def transcribe_file(
+    file: UploadFile = File(...),
+    paraphrase: str | None = Form(None),  # "1"/"on"/"true" supported
+):
+    path = None
+    tmpdir = None
+    try:
+        path = save_upload_to_tmp(file)
+        tmpdir = os.path.dirname(path)
+
+        text = run_transcription(path)
+        if as_bool(paraphrase):
+            try:
+                text = simple_paraphrase(text)
+            except Exception:
+                pass
+
+        return {"ok": True, "text": text}
+    except Exception as e:
+        return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
+    finally:
+        if tmpdir and os.path.isdir(tmpdir):
+            shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+@app.post("/transcribe_url")
+async def transcribe_url(
+    request: Request,
+    video_url: str | None = Form(None),
+    paraphrase: str | None = Form(None),
+):
+    """
+    Accepts:
+      - JSON: {"url":"...","paraphrase":true/false}
+      - or multipart/form-data with fields: video_url, paraphrase
+    """
+    local_path = None
+    tmpdir = None
+    try:
+        # Prefer JSON body if present
+        url = None
+        if request.headers.get("content-type", "").startswith("application/json"):
+            try:
+                payload = await request.json()
+                if isinstance(payload, dict):
+                    url = payload.get("url") or payload.get("video_url")
+                    if "paraphrase" in payload:
+                        paraphrase = payload.get("paraphrase")
+            except Exception:
+                pass
+
+        if not url:
+            url = video_url
+
+        if not url:
+            return JSONResponse({"ok": False, "error": "Missing URL"}, status_code=400)
+
+        local_path = download_video_to_tmp(url)
+        tmpdir = os.path.dirname(local_path)
+
+        text = run_transcription(local_path)
+        if as_bool(paraphrase):
+            try:
+                text = simple_paraphrase(text)
+            except Exception:
+                pass
+
+        return {"ok": True, "text": text}
+
+    except subprocess.CalledProcessError as e:
+        return JSONResponse({"ok": False, "error": f"Download failed: {e}"}, status_code=500)
+    except Exception as e:
+        return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
+    finally:
+        if tmpdir and os.path.isdir(tmpdir):
+            shutil.rmtree(tmpdir, ignore_errors=True)

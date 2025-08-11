@@ -7,3 +7,6 @@ ffmpeg-python
 faster-whisper>=1.0,<2.0
 ctranslate2<4
 tokenizers<0.21
+pydantic>=2.8
+yt-dlp>=2025.0.0
+requests>=2.32
